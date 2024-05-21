@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }, 
   updatedAt: { type: Date, default: Date.now }, 
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  isEmailVerified: { type: Boolean, default: false },
+  isEmailVerified: { type: Boolean, default: true },
 
   // Embedded schema for cards (array of objects)
   cards: [{

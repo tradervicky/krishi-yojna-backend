@@ -12,6 +12,8 @@ router.get('/', cardController.getAllCards)
 
 router.get('/:id', cardController.getCardById)
 
+//get cards by userId
+ router.get('/user/:userId', cardController.getUserCard)
 // update card by id
 
 router.put('/update/:id', cardController.updateCardById)

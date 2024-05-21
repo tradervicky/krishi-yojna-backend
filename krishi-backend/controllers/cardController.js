@@ -129,6 +129,19 @@ const getCardById = async (req, res) => {
     }
 };
 
+// get card using userId
+const getUserCard = async (req, res) => {
+    const { userId } = req.params; // Extract userId from URL parameters
+
+    try {
+        const cards = await Card.find({ user: userId }); // Query to find cards matching the userId
+        res.status(200).json(cards);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 // get all cards
 
 const getAllCards = async (req, res) => {
@@ -166,5 +179,6 @@ module.exports = {
     updateCardById,
     getCardById,
     getAllCards,
-    deleteCardById
+    deleteCardById,
+    getUserCard
 };
