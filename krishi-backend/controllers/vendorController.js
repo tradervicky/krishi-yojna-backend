@@ -86,41 +86,49 @@ const updateVendor = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
-    // console.log("requested", req);
-    const panCardFile = await Upload.uploadFile(req.files["panCard"][0].path);
-    const aadharCardFile = await Upload.uploadFile(
-      req.files["aadharCard"][0].path
-    );
-    const businessDocFile = await Upload.uploadFile(
-      req.files["businessDoc"][0].path
-    );
 
+    let fileUpdates = {};
+
+    // Check if files are present and upload them if they are
+    if (req.files && req.files["panCard"] && req.files["panCard"][0]) {
+      const panCardFile = await Upload.uploadFile(req.files["panCard"][0].path);
+      fileUpdates.panCard = panCardFile.secure_url;
+    }
+
+    if (req.files && req.files["aadharCard"] && req.files["aadharCard"][0]) {
+      const aadharCardFile = await Upload.uploadFile(req.files["aadharCard"][0].path);
+      fileUpdates.aadharCard = aadharCardFile.secure_url;
+    }
+
+    if (req.files && req.files["businessDoc"] && req.files["businessDoc"][0]) {
+      const businessDocFile = await Upload.uploadFile(req.files["businessDoc"][0].path);
+      fileUpdates.businessDoc = businessDocFile.secure_url;
+    }
+
+    // Merge file updates with other updates
+    const updateData = {
+      ...updates,
+      ...fileUpdates
+    };
+
+    // Find and update the vendor
     const updatedResult = await Vendor.findByIdAndUpdate(
       { _id: id },
-      {
-        ...updates,
-        panCard: panCardFile.secure_url,
-        aadharCard: aadharCardFile.secure_url,
-        businessDoc: businessDocFile.secure_url,
-      },
-      {
-        new: true,
-      }
+      updateData,
+      { new: true }
     );
 
     if (!updatedResult) {
       return res.status(404).json({ message: "Vendor not found" });
     }
+
     console.log(updatedResult);
-    res
-      .status(200)
-      .json({ message: "Vendor updated successfully", vendor: updatedResult });
+    res.status(200).json({ message: "Vendor updated successfully", vendor: updatedResult });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 // delete vendor by id
 
 const deleteVendorById = async (req, res) => {

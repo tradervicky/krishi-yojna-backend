@@ -103,23 +103,35 @@ const deleteUserById = async (req, res) => {
 }
 
 // update user by id
+// update user by id
 const updateUserById = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
 
-        // Upload new panCard and aadharCard files
-        const panCardFile = await Upload.uploadFile(req.files["panCard"][0].path);
-        const aadharCardFile = await Upload.uploadFile(req.files["aadharCard"][0].path);
+        // Object to hold new file uploads if they exist
+        let fileUpdates = {};
+
+        // Check if panCard and aadharCard files are present in the request
+        if (req.files && req.files["panCard"] && req.files["panCard"][0]) {
+            const panCardFile = await Upload.uploadFile(req.files["panCard"][0].path);
+            fileUpdates.panCard = panCardFile.secure_url;
+        }
+        if (req.files && req.files["aadharCard"] && req.files["aadharCard"][0]) {
+            const aadharCardFile = await Upload.uploadFile(req.files["aadharCard"][0].path);
+            fileUpdates.aadharCard = aadharCardFile.secure_url;
+        }
+
+        // Merge file updates with other updates
+        const updateData = {
+            ...updates,
+            ...fileUpdates
+        };
 
         // Check if the user exists and update
         const updatedResult = await User.findByIdAndUpdate(
-            { _id: id },
-            {
-                ...updates,
-                panCard: panCardFile.secure_url,
-                aadharCard: aadharCardFile.secure_url
-            },
+            id,
+            updateData,
             { new: true }
         );
 
@@ -135,6 +147,7 @@ const updateUserById = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 
 
 module.exports = {createUser, getAllUsers, getUserById, deleteUserById, updateUserById};
