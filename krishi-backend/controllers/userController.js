@@ -137,4 +137,4 @@ const updateUserById = async (req, res) => {
 }
 
 
-module.exports = {createUser, getAllUsers, getUserById, deleteUserById, updateUserById}
+module.exports = {createUser, getAllUsers, getUserById, deleteUserById, updateUserById};

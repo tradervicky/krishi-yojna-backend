@@ -41,17 +41,29 @@ exports.signupController = async (req, res) => {
     try {
         const { email, name, password } = req.body;
         validateSignup.parse({ email, name, password });
+        
         const findUser = await user.findOne({ email });
         if (findUser) {
             return res.status(400).send({ message: "User exists with this email, please try another email" });
         }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new user({ email, name, password: hashedPassword });
         await newUser.save();
+
         const accessToken = generateAccessToken(newUser);
-        res.status(201).json({ message: "User created successfully", accessToken });
+
+        // Create a user object without the password
+        const userDetails = {
+            _id: newUser._id,
+            email: newUser.email,
+            name: newUser.name,
+            // Add other fields you want to include in the response
+        };
+
+        res.status(201).json({ message: "User created successfully", accessToken, user: userDetails });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
     }
-}
+};
