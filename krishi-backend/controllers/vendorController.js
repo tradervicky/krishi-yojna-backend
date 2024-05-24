@@ -13,9 +13,6 @@ const createVendor = async (req, res) => {
       gstIn,
       address,
       password,
-      panCard,
-      aadharCard,
-      businessDoc,
     } = req.body;
 
     // Check if the email is already registered
@@ -24,15 +21,23 @@ const createVendor = async (req, res) => {
       return res.status(400).json({ message: "Email already registered" });
     }
 
+    // Check if files are provided
+    if (!req.files || !req.files["panCard"] || !req.files["panCard"][0]) {
+      return res.status(400).json({ message: "Please upload a Pan Card" });
+    }
+
+    if (!req.files || !req.files["aadharCard"] || !req.files["aadharCard"][0]) {
+      return res.status(400).json({ message: "Please upload an Aadhar Card" });
+    }
+
+    if (!req.files || !req.files["businessDoc"] || !req.files["businessDoc"][0]) {
+      return res.status(400).json({ message: "Please upload a Business Document" });
+    }
+
     // Upload files to Cloudinary
-    // console.log("pathName",req.files['panCard'][0].path)
     const panCardFile = await Upload.uploadFile(req.files["panCard"][0].path);
-    const aadharCardFile = await Upload.uploadFile(
-      req.files["aadharCard"][0].path
-    );
-    const businessDocFile = await Upload.uploadFile(
-      req.files["businessDoc"][0].path
-    );
+    const aadharCardFile = await Upload.uploadFile(req.files["aadharCard"][0].path);
+    const businessDocFile = await Upload.uploadFile(req.files["businessDoc"][0].path);
 
     // Create a new vendor with Cloudinary file URLs
     const newVendor = new Vendor({
@@ -53,9 +58,10 @@ const createVendor = async (req, res) => {
     res.status(201).json({ message: "Vendor created successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
 
 // get all vendors list
 
@@ -77,7 +83,7 @@ const getVendorById = async (req, res) => {
     res.status(200).json(vendor);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -129,6 +135,7 @@ const updateVendor = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 // delete vendor by id
 
 const deleteVendorById = async (req, res) => {
