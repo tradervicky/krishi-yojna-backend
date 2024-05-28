@@ -5,6 +5,7 @@ const addProduct = async (req, res) => {
     try {
         const {
             title,
+            vendor,
             price,
             category,
             subCategory,
@@ -16,6 +17,7 @@ const addProduct = async (req, res) => {
 
         const newProduct = new Product({ // Use uppercase "Product" for model instantiation
             title,
+            vendor,
             price,
             category,
             subCategory,
@@ -66,6 +68,7 @@ const updateProductById = async (req, res)=>{
     try {
         const {
             title,
+            vendor,
             price,
             category,
             subCategory,
@@ -98,6 +101,7 @@ const updateProductById = async (req, res)=>{
             req.params.id,
             {
                 title,
+                vendor,
                 price,
                 category,
                 subCategory,
