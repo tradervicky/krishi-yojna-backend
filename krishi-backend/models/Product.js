@@ -8,7 +8,9 @@ const productSchema = new mongoose.Schema({
     category : {type : String, required : true},
     subCategory : {type : String},
     quantity : {type : String, required : true},
-    description : {type : String}
+    description : {type : String},
+    createdAt: { type: Date, default: Date.now },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 })
 
 module.exports = mongoose.model('products', productSchema)

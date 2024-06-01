@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const vendorRoutes = require('./routes/vendorRoutes');
 const productRoutes = require('./routes/productRoutes');
 const cardRoutes = require('./routes/cardRoutes')
+const dashboardRoutes = require('./routes/dashboardRoutes')
 const cors = require('cors')
 require('dotenv').config();
 
@@ -21,6 +22,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/vendors', vendorRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cards', cardRoutes);
+app.use('/api/dashboard',dashboardRoutes)
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI)
