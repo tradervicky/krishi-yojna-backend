@@ -98,7 +98,7 @@ const updateProductById = async (req, res)=>{
             await Upload.deleteFile(imagePublicId);
         }
 
-        // Upload the new image to Cloudinary
+        // Upload the new image to Cloudinary upload
 
 
         const imageFile = await Upload.uploadFile(req.files["image"][0].path);
